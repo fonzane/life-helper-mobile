@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding main">
+    <h3>Logge dich ein</h3>
+    <ion-item class="w-full">
+      <ion-label position="floating">E-Mail <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required type="text" #email></ion-input>
+    </ion-item>
+    <ion-item class="w-full">
+      <ion-label position="floating">Passwort <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required type="password" #password></ion-input>
+    </ion-item>
+    <ion-button (click)="onLogin(email, password)" class="w-full ion-margin" block color="primary" type="submit">
+      Einloggen
+    </ion-button>
+    <!-- <h3>Login</h3>
+    <ion-card class="ion-padding w-full">
+      <ion-input type="text" placeholder="Email"></ion-input>
+    </ion-card>
+    <ion-card class="ion-padding w-full">
+      <ion-input type="password" placeholder="Password"></ion-input>
+    </ion-card>
+    <ion-button class="w-full" size="large" color="success" expand="full" fill="outline" shape="round">
+      Submit
+    </ion-button> -->
+  </div>  
+</ion-content>
