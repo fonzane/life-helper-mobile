@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,18 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  
+  constructor(private auth: AuthService,
+              private storage: Storage,
+              private router: Router) {}
+
+  onLogout() {
+    this.auth.authenticated.next(false);
+    this.storage.remove('token');
+    this.router.navigateByUrl('auth');
+  }
+
+  isLoggedIn() {
+    return this.auth.authenticated.value;
+  }
 }
