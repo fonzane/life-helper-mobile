@@ -18,6 +18,7 @@ export class AuthComponent implements OnInit {
   ngOnInit() {
     this.storage.get('token').then((storage) => {
       if (storage) {
+        console.log(storage);
         this.auth.authenticated.next(true);
         this.auth.token = storage;
         this.router.navigateByUrl('home');

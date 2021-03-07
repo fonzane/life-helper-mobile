@@ -23,6 +23,12 @@ export class AuthService {
     return userID;
   }
 
+  getUsername(token: string): string {
+    let decodedToken = this.decodeToken(token);
+    let username = decodedToken.user.name;
+    return username;
+  }
+
   decodeToken(token: string): { iat: number, user: {_id: string, name: string, email: string} } {
     const decodedToken: { iat: number, user: {_id: string, name: string, email: string} } = JSON.parse(window.atob(token.split('.')[1]));
     return decodedToken;

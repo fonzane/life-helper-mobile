@@ -18,6 +18,7 @@ export class AppComponent {
     this.auth.authenticated.next(false);
     this.storage.remove('token');
     this.router.navigateByUrl('auth');
+    window.location.reload();
   }
 
   isLoggedIn() {

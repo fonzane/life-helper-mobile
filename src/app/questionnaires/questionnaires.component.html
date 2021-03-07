@@ -1,0 +1,7 @@
+<ion-content>
+  <div class="container">
+    <ion-button color="dark" (click)="presentModal(questionnaire)" *ngFor="let questionnaire of questionnaires" expand="block" fill="clear" shape="round">
+      {{questionnaire.name}}
+    </ion-button>
+  </div>
+</ion-content>
