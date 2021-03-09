@@ -19,12 +19,18 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [AuthGuardService]
-  },
-  {
-    path: 'questionnaires',
-    component: QuestionnairesComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService],
+    children: [
+      {
+        path: 'home',
+        redirectTo: '',
+        pathMatch: 'full'
+      },
+      {
+        path: 'questionnaires',
+        component: QuestionnairesComponent
+      }
+    ]
   }
 ];
 
