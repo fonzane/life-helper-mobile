@@ -3,9 +3,9 @@ import { Storage } from '@ionic/storage';
 import { Plugins } from '@capacitor/core';
 import { ToastController, ModalController } from '@ionic/angular';
 
-import { Questionnaire } from '../models/questionnaire';
-import { AuthService } from '../services/auth.service';
-import { QuestionnaireService } from '../services/questionnaire.service';
+import { Questionnaire } from '../../models/questionnaire';
+import { AuthService } from '../../services/auth.service';
+import { QuestionnaireService } from '../../services/questionnaire.service';
 
 const { App, BackgroundTask, LocalNotifications } = Plugins;
 
@@ -30,9 +30,9 @@ export class QuestionnairesComponent implements OnInit {
       if(questionnaires) {
         this.storage.set('questionnaires', questionnaires);
         this.questionnaires = questionnaires;
-        this.presentToast("Fragebögen wurden aus der Datenbank geladen", 3000);
+        this.presentToast("Fragebögen wurden aus der Datenbank geladen.", 1500);
       } else {
-        this.presentToast("Fragebögen konnten nicht gefunden werden.", 3000);
+        this.presentToast("Es konnten keine Fragebögen gefunden werden.", 3000);
       }
     });
   }

@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuardService } from './services/auth-guard.service';
 import { HomeComponent } from './home/home.component';
-import { ModalPage, QuestionnairesComponent } from './questionnaires/questionnaires.component';
+import { ModalPage, QuestionnairesComponent } from './home/questionnaires/questionnaires.component';
 
 @NgModule({
   declarations: [

@@ -9,14 +9,8 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  username: string;
 
-  constructor(private auth: AuthService,
-              private storage: Storage) { }
+  constructor() { }
 
-  ngOnInit() {
-    this.storage.get('token').then(token => {
-      this.username = this.auth.getUsername(token);
-    })
-  }
+  ngOnInit() {  }
 }

@@ -14,11 +14,17 @@ export class AppComponent {
               private storage: Storage,
               private router: Router) {}
 
+  onRouteActivate(event) {
+    if (this.auth.authenticated.value) {
+      console.log(event);
+    }
+  }
+
   onLogout() {
     this.auth.authenticated.next(false);
-    this.storage.remove('token').then(response => {
+    this.storage.clear().then(response => {
       this.auth.authenticated.next(false);
-      window.location.reload();
+      this.router.navigateByUrl('auth', {replaceUrl: true});
     });
   }
 
