@@ -3,11 +3,9 @@ import { Storage } from '@ionic/storage';
 import { Plugins } from '@capacitor/core';
 import { ToastController, ModalController } from '@ionic/angular';
 
-import { Questionnaire } from '../../models/questionnaire';
+import { Questionnaire, Schedule } from '../../models/questionnaire';
 import { AuthService } from '../../services/auth.service';
 import { QuestionnaireService } from '../../services/questionnaire.service';
-
-const { App, BackgroundTask, LocalNotifications } = Plugins;
 
 @Component({
   selector: 'app-home',
@@ -18,11 +16,12 @@ export class QuestionnairesComponent implements OnInit {
   questionnaires: Questionnaire[];
   weekdays: Array<string> = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
   today: string = this.weekdays[new Date().getDay()];
+  questionnaireQueue: Questionnaire[] = [];
 
   constructor(private questionnaireService: QuestionnaireService,
-              private auth: AuthService,
               private storage: Storage,
               private toastController: ToastController,
+              private auth: AuthService,
               public modalController: ModalController) { }
 
   async ngOnInit() {
@@ -34,6 +33,20 @@ export class QuestionnairesComponent implements OnInit {
       } else {
         this.presentToast("Es konnten keine Fragebögen gefunden werden.", 3000);
       }
+      this.questionnaires.forEach((questionnaire: Questionnaire) => {
+        questionnaire.schedule.forEach((schedule: Schedule) => {
+          const date = new Date();
+          const today = this.weekdays[date.getDay()];
+          const hour = date.getHours().toString().length === 1 ? "0" + date.getHours() : date.getHours();
+          const minute = date.getMinutes().toString().length === 1 ? "0" + date.getMinutes() : date.getMinutes();
+          if(schedule[today] && schedule[today].split(":")[0] == hour) {
+            if(!this.questionnaireQueue.includes(questionnaire)) {
+              this.questionnaireQueue.push(questionnaire);
+            }
+            console.log(this.questionnaireQueue);
+          }
+        })
+      })
     });
   }
 
@@ -62,9 +75,21 @@ export class QuestionnairesComponent implements OnInit {
     await modal.present();
   }
 
-  checkQuestionnaireTime(questionnaires: Questionnaire[]): Questionnaire | null {
-    return null;
+  checkQuestionnaireSchedule() {
+    const { App, BackgroundTask, LocalNotifications } = Plugins;
+    App.addListener('appStateChange', (state) => {
+      let taskId = BackgroundTask.beforeExit(async () => {
+        const date = new Date();
+        const today = this.weekdays[date.getDay()];
+        const hours = date.getHours().toString().length === 1 ? "0" + date.getHours() : date.getHours();
+        const minutes = date.getMinutes().toString().length === 1 ? "0" + date.getMinutes() : date.getMinutes();
+      })
+      BackgroundTask.finish({
+        taskId
+      })
+    })
   }
+
 }
 
 @Component({

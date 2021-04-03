@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
-
-import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +8,11 @@ import { AuthService } from '../services/auth.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { 
+    
+  }
 
-  ngOnInit() {  }
+  ngOnInit() { 
+    this.router.navigateByUrl('home/dashboard');
+  }
 }

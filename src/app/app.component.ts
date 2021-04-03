@@ -14,12 +14,6 @@ export class AppComponent {
               private storage: Storage,
               private router: Router) {}
 
-  onRouteActivate(event) {
-    if (this.auth.authenticated.value) {
-      console.log(event);
-    }
-  }
-
   onLogout() {
     this.auth.authenticated.next(false);
     this.storage.clear().then(response => {

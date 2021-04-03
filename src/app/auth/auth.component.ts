@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Storage } from '@ionic/storage';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -18,7 +18,6 @@ export class AuthComponent implements OnInit {
   ngOnInit() {
     this.storage.get('token').then((storage) => {
       if (storage) {
-        console.log(storage);
         this.auth.authenticated.next(true);
         this.auth.token = storage;
         this.router.navigateByUrl('home');
@@ -33,8 +32,15 @@ export class AuthComponent implements OnInit {
       this.auth.token = resp.token;
       this.storage.set('token', resp.token).then(response => {
         this.auth.authenticated.next(true);
-        this.auth.getUserID(resp.token);
-        this.router.navigateByUrl('home');
+        let navigationExtras: NavigationExtras = {
+          state: {
+            userdetails: {
+              username: this.auth.getUsername(resp.token),
+              userID: this.auth.getUserID(resp.token)
+            }
+          }
+        }
+        this.router.navigate(['home'], navigationExtras);
       }) 
     })
   }
