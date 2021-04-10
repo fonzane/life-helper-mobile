@@ -9,7 +9,20 @@ export interface Questionnaire {
     _id: string;
 }
 
-interface Question {
+export interface SolvedQuestionnaire {
+    _id: string;
+    solvedAt: string;
+    name: string;
+    solvedQuestions: SolvedQuestion[];
+    userID: string;
+    number: number;
+}
+
+export interface SolvedQuestion extends Question {
+    answer: string | number;
+}
+
+export interface Question {
     _id: string;
     open: boolean;
     phrase: string;
