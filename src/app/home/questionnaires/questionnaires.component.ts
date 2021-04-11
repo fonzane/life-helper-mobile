@@ -6,8 +6,8 @@ import { ToastController, ModalController, AlertController } from '@ionic/angula
 import { Questionnaire, Schedule, Question, SolvedQuestion } from '../../models/questionnaire';
 import { AuthService } from '../../services/auth.service';
 import { QuestionnaireService } from '../../services/questionnaire.service';
-import { concat, defer, from, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { AsyncSubject, concat, defer, from, Observable } from 'rxjs';
+import { concatMap, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -37,63 +37,76 @@ export class QuestionnairesComponent implements OnInit {
       } else {
         this.presentToast("Es konnten keine Fragebögen gefunden werden.", 3000);
       }
-      this.showQuestionnaire(this.questionnaires[0]);
-      // this.questionnaires.forEach((questionnaire: Questionnaire) => {
-      //   questionnaire.schedule.forEach((schedule: Schedule) => {
-      //     const date = new Date();
-      //     const today = this.weekdays[date.getDay()];
-      //     const hour = date.getHours().toString().length === 1 ? "0" + date.getHours() : date.getHours();
-      //     // const minute = date.getMinutes().toString().length === 1 ? "0" + date.getMinutes() : date.getMinutes();
-      //     if(schedule[today] && schedule[today].split(":")[0] == hour) {
-      //       if(!this.questionnaireQueue.includes(questionnaire)) {
-      //         this.questionnaireQueue.push(questionnaire);
-      //       }
-      //       console.log(this.questionnaireQueue);
-      //     }
-      //   })
-      // })
+      this.promptQuestionnaire(this.questionnaires[0]);
     });
   }
 
-    // showQuestionnaire(questionnaire: Questionnaire): Observable<ReadonlyArray<Answer>> { 
-    //   const questions$ = questionnaire.questions.map(question => this.askQuestion(question));
-    //   return concat(questions$);
-    // }
-    // private askQuestion(question: Question): Observable<Answer> {
-    //   const name = `question....`;
-    //   return this.alertController.create({...}).pipe(
-    //     switchMap(alert => alert.present())
-    //   );
-    // }
-  
-    showQuestionnaire(questionnaire: Questionnaire) {
-      const question$ = questionnaire.questions.map(question => this.askQuestion(question));
-      return concat(question$);
+  async promptQuestionnaire(questionnaire: Questionnaire) {
+    for(let i = 0; i < questionnaire.questions.length; i++) {
+      await this.promptQuestion(questionnaire.questions[i]);
     }
-
-  private async askQuestion(question: Question) {
-    const name = `${question._id}`;
-    console.log("hello");
-    return from(this.alertController.create({
-      header: question.phrase,
-      inputs: [
-        {
-          name: name,
-          type: 'text',
-        }
-      ],
-      buttons: [
-        {
-          text: 'Antwort',
-          handler: (resp) => {
-            this.solvedQuestions.push(resp[name]);
-          }
-        }
-      ]
-    })).pipe(
-      switchMap(alert => alert.present())
-    );
   }
+
+  promptQuestion(question: Question) {
+    return new Promise(async (resolve) => {
+      const alert = await this.alertController.create({
+        header: question.phrase,
+        inputs: [
+          {
+            name: question._id,
+            type: 'text',
+          }
+        ],
+        buttons: [
+          {
+            text: 'Antwort',
+            handler: (resp) => {
+              this.solvedQuestions.push(resp[question._id]);
+              resolve(resp[question._id]);
+            }
+          }
+        ]
+      })
+      await alert.present();
+    })
+  }
+
+  // showQuestionnaire(questionnaire: Questionnaire): Observable<ReadonlyArray<Answer>> { 
+  //   const questions$ = questionnaire.questions.map(question => this.askQuestion(question));
+  //   return concat(questions$);
+  // }
+  // private askQuestion(question: Question): Observable<Answer> {
+  //   const name = `question....`;
+  //   return this.alertController.create({...}).pipe(
+  //     switchMap(alert => alert.present())
+  //   );
+  // }
+  
+  // showQuestionnaire(questionnaire: Questionnaire) {
+  //   questionnaire.questions.map(async (question) => await this.askQuestion(question));
+  // }
+
+  // private async askQuestion(question: Question) {
+  //   const name = `${question._id}`;
+  //   const alert = await this.alertController.create({
+  //     header: question.phrase,
+  //     inputs: [
+  //       {
+  //         name: name,
+  //         type: 'text',
+  //       }
+  //     ],
+  //     buttons: [
+  //       {
+  //         text: 'Antwort',
+  //         handler: (resp) => {
+  //           this.solvedQuestions.push(resp[name]);
+  //         }
+  //       }
+  //     ]
+  //   })
+  //   await alert.present();
+  // }
 
   // async fillQuestionnaire(questionnaire: Questionnaire) {
   //   let solvedQuestions: SolvedQuestion[] = [];
